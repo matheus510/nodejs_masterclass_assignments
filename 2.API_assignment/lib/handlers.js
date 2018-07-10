@@ -107,14 +107,13 @@ handlers._users.put = function(data, callback) {
     //Parse payload
     var parsedPayload = JSON.parse(data.payload);
     // Verify if the email informed does exist
-    var emailAddress = typeof(parsedPayload.email) == 'string' && helpers.validateEmail(parsedPayload.email) ? parsedPayload.email : false;
-
+    var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress) ? parsedPayload.emailAddress : false;
     // Check optional fields sended
     var firstName = typeof(parsedPayload.firstName) == 'string' && parsedPayload.firstName.trim().length > 0 ? parsedPayload.firstName.trim() : false;
     var lastName = typeof(parsedPayload.lastName) == 'string' && parsedPayload.lastName.trim().length > 0 ? parsedPayload.lastName.trim() : false;
     var streetAddress = typeof(parsedPayload.lastName) == 'string' && parsedPayload.lastName.trim().length > 0 ? parsedPayload.lastName.trim() : false;
     var password = typeof(parsedPayload.password) == 'string' && parsedPayload.password.trim().length > 5 ? parsedPayload.password.trim() : false;
-
+    
     if(emailAddress){
       if (firstName || lastName || streetAddress || password) {
         // Check if user exists and return the data for that user
