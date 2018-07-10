@@ -1,3 +1,8 @@
+/*
+ * Primary file for the pizza-delivery helpers
+ * 
+*/
+
 // Dependencies
 var crypto = require('crypto');
 var config = require('./config');

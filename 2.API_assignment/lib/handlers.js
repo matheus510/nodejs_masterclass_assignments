@@ -2,6 +2,7 @@
  * Primary file for the pizza-delivery handlers
  * 
 */
+
 // Dependencies
 var helpers = require('./helpers')
 var _data = require('./data')
@@ -34,10 +35,12 @@ handlers._users = {}
 // Users - post
 // Required fields: firstName, lastName, emailAddress, streetAddress, password, tosAgreement
 handlers._users.post = function (data, callback) {
-  var parsedPayload = JSON.parse(data.payload)
+  //Parse payload
+  var parsedPayload = JSON.parse(data.payload);
+
   var firstName = typeof(parsedPayload.firstName) == 'string' && parsedPayload.firstName.trim().length > 0 ? parsedPayload.firstName.trim() : false;
   var lastName = typeof(parsedPayload.lastName) == 'string' && parsedPayload.lastName.trim().length > 0 ? parsedPayload.lastName.trim() : false;
-  var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress.trim()) ? parsedPayload.emailAddress.trim() : false
+  var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress.trim()) ? parsedPayload.emailAddress.trim() : false;
   var streetAddress = typeof(parsedPayload.lastName) == 'string' && parsedPayload.lastName.trim().length > 0 ? parsedPayload.lastName.trim() : false;
   var password = typeof(parsedPayload.password) == 'string' && parsedPayload.password.trim().length > 5 ? parsedPayload.password.trim() : false;
   var tosAgreement = typeof(parsedPayload.tosAgreement) == 'boolean' && parsedPayload.tosAgreement ? true : false;
@@ -56,7 +59,7 @@ handlers._users.post = function (data, callback) {
             'streetAddress': streetAddress,
             'password': hashedPassword,
             'tosAgreement': true
-          }
+          };
           // Persist new user
           _data.create('users', newUser.emailAddress, newUser, function(err){
             if(!err){
@@ -79,26 +82,76 @@ handlers._users.post = function (data, callback) {
 
 // Users - get
 // Required field: emailAddress
-//@TODO add authorizarion token, only the user should be capable of getting its own user
 handlers._users.get = function(data, callback) {
-  console.log(data)
-  var emailAddress = typeof(data.queryStringObject.email) == 'string' && helpers.validateEmail(data.queryStringObject.email) ? data.queryStringObject.email : false
+  var emailAddress = typeof(data.queryStringObject.email) == 'string' && helpers.validateEmail(data.queryStringObject.email) ? data.queryStringObject.email : false;
   if(emailAddress){
     // Check if user exists and return the data for that user
-    _data.read('users', emailAddress, function(err, data){
-      if(!err && data) {
-        delete data.password;
-        callback(200, data);
+    //@TODO add authentication
+    _data.read('users', emailAddress, function(err, userData){
+      if(!err && userData) {
+        delete userData.password;
+        callback(200, userData);
       } else {
         callback(404);
       }
     })
   } else {
-    callback(400, {'Error' : 'Invalid email address'})
+    callback(400, {'Error' : 'Invalid email address'});
   }
-}
-// Users - put
+};
 
+// Users - put
+// Required fields: emailAddress and one optional field
+// Optional fields: firstName, lastName, streetAddress, password
+handlers._users.put = function(data, callback) {
+    //Parse payload
+    var parsedPayload = JSON.parse(data.payload);
+    // Verify if the email informed does exist
+    var emailAddress = typeof(parsedPayload.email) == 'string' && helpers.validateEmail(parsedPayload.email) ? parsedPayload.email : false;
+
+    // Check optional fields sended
+    var firstName = typeof(parsedPayload.firstName) == 'string' && parsedPayload.firstName.trim().length > 0 ? parsedPayload.firstName.trim() : false;
+    var lastName = typeof(parsedPayload.lastName) == 'string' && parsedPayload.lastName.trim().length > 0 ? parsedPayload.lastName.trim() : false;
+    var streetAddress = typeof(parsedPayload.lastName) == 'string' && parsedPayload.lastName.trim().length > 0 ? parsedPayload.lastName.trim() : false;
+    var password = typeof(parsedPayload.password) == 'string' && parsedPayload.password.trim().length > 5 ? parsedPayload.password.trim() : false;
+
+    if(emailAddress){
+      if (firstName || lastName || streetAddress || password) {
+        // Check if user exists and return the data for that user
+        // @TODO add authentication
+        _data.read('users', emailAddress, function(err, userData){
+          if(!err && userData) {
+            // Update fields sent
+            if (firstName) {
+              userData.firstName = firstName;
+            }
+            if (lastName) {
+              userData.lastName = lastName;
+            }
+            if (streetAddress) {
+              userData.streetAddress = streetAddress;
+            }
+            if (password) {
+              userData.password = helpers.hash(password);
+            }
+            _data.update('users',emailAddress,userData,function(err){
+              if(!err){
+                callback(200);
+              } else {
+                callback(500,{'Error' : 'Could not update the user.'});
+              }
+            });
+          } else {
+            callback(400, {'Error' : 'User specified does not exist'});
+          }
+        })
+      } else {
+        callback(400, {'Error' : 'Missing fields to be updated'})
+      }
+    } else {
+      callback(400, {'Error' : 'Missing required field'});
+    }
+};
 // Users - delete
 
 module.exports = handlers
