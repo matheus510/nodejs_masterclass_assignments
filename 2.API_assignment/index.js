@@ -5,7 +5,7 @@
 
 var http = require('http');
 var https = require('https');
-var config = require('./config');
+var config = require('./lib/config');
 var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var handlers = require('./lib/handlers');
@@ -35,7 +35,6 @@ var internalServer = function (req, res) {
   var headers = req.headers;
 
   // Get the payload,if any
-  
   var decoder = new StringDecoder('utf-8');
   var buffer = '';
 
@@ -55,7 +54,9 @@ var internalServer = function (req, res) {
       'headers' : headers,
       'payload' : buffer
     };
-    handlers.sample(data, function (statusCode, payload) {
+    var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
+
+    chosenHandler(data, function (statusCode, payload) {
       // Convert the payload to a string
       var payloadString = JSON.stringify(payload);
 
@@ -65,7 +66,6 @@ var internalServer = function (req, res) {
       res.end(payloadString);
       console.log("Returning this response: ",statusCode,payloadString);
     })
-    //var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound
   });
 };
 
@@ -78,5 +78,6 @@ httpsServer.listen(config.httpsPort, function() {
 
 // Define the request router
 var router = {
-  'sample' : handlers.sample
+  'ping' : handlers.ping,
+  'users' : handlers.users
 };

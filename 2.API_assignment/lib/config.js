@@ -9,13 +9,15 @@ var config = {};
 config.staging = {
   'httpPort': 5000,
   'httpsPort': 5001,
-  'envName': 'staging' 
+  'envName': 'staging',
+  'hashingSecret': 'hiddenSecret'
 };
 
 config.production = {
   'httpPort': 5000,
   'httpsPort': 5001,
-  'envName': 'production'
+  'envName': 'production',
+  'hashingSecret': 'hiddenSecret'
 };
 // Determine which environment was passed as a command-line argument
 var currentEnvironment = typeof(process.env.NODE_ENV) == 'string' ? process.env.NODE_ENV.toLowerCase() : '';
