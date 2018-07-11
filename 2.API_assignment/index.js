@@ -56,7 +56,7 @@ var internalServer = function (req, res) {
       'payload' : buffer
     };
     var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
-
+    console.log(trimmedPath, chosenHandler)
     chosenHandler(data, function (statusCode, payload) {
       // Convert the payload to a string
       var payloadString = JSON.stringify(payload);
@@ -71,10 +71,10 @@ var internalServer = function (req, res) {
 };
 
 httpServer.listen(config.httpPort, function() {
-  console.log('listening at port: '+ config.httpPort)
+  console.log('\x1b[42m%s\x1b[0m','listening at port: '+ config.httpPort)
 });
 httpsServer.listen(config.httpsPort, function() {
-  console.log('listening at port: '+ config.httpsPort)
+  console.log('\x1b[42m%s\x1b[0m','listening at port: '+ config.httpsPort)
 });
 
 // Define the request router
