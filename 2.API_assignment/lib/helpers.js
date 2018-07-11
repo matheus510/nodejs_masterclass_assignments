@@ -1,5 +1,5 @@
 /*
- * Primary file for the pizza-delivery helpers
+ * Primary file for helpers
  * 
 */
 

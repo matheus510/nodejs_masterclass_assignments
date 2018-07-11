@@ -1,5 +1,5 @@
 /*
- * Primary file for the pizza-delivery handlers
+ * Primary file for handlers
  * 
 */
 
@@ -18,7 +18,7 @@ handlers.ping = function (data, callback) {
 handlers.notFound = function(data,callback){
   callback(404);
 };
-
+// USERS handlers begin
 // Create wrapper for all users methods
 handlers.users = function(data,callback){
   var acceptableMethods = ['post','get','put','delete'];
@@ -159,7 +159,7 @@ handlers._users.delete = function(data, callback) {
   var parsedPayload = JSON.parse(data.payload);
   // Verify if the email informed does exist
   var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress) ? parsedPayload.emailAddress : false;
-  
+
   if(emailAddress) {
     //add authorization!
     _data.delete('users', emailAddress, function(err){
@@ -173,4 +173,20 @@ handlers._users.delete = function(data, callback) {
     callback(400, {'Error' : 'User not found'})
   }
 }
+// USERS handlers end
+
+// TOKENS handlers begin
+handlers.tokens = function(data, callback) {
+  var acceptableMethods = ['post','get','delete'];
+  if(acceptableMethods.indexOf(data.method) > -1){
+    handlers._users[data.method](data,callback);
+  } else {
+    callback(405);
+  }
+}
+
+// Tokens wrapper for all methods
+handlers._tokens = {}
+
+// TOKENS handlers end
 module.exports = handlers

@@ -1,5 +1,5 @@
 /*
- * Primary file for the pizza-delivery data lib
+ * Primary file for data lib
  * 
 */
 
