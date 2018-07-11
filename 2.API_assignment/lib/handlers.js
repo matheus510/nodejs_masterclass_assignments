@@ -152,5 +152,25 @@ handlers._users.put = function(data, callback) {
     }
 };
 // Users - delete
-
+// Required fields: emailAddress
+//@TODO only let user deletion if token is present
+handlers._users.delete = function(data, callback) {
+  //Parse payload
+  var parsedPayload = JSON.parse(data.payload);
+  // Verify if the email informed does exist
+  var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress) ? parsedPayload.emailAddress : false;
+  
+  if(emailAddress) {
+    //add authorization!
+    _data.delete('users', emailAddress, function(err){
+      if(!err) {
+        callback(200)
+      } else {
+        callback(500, {'Error' : 'User could not be deleted'})
+      }
+    })
+  } else {
+    callback(400, {'Error' : 'User not found'})
+  }
+}
 module.exports = handlers
