@@ -34,5 +34,21 @@ helpers.hash = function(str){
     return false;
   }
 };
+// Create random strings
+helpers.createRandomString = function(length){
+  
+  if(length){
+    //initialize the string
+    var str = '';
+    // set the characters
+    var allowedCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < length; i++){
+      str+=allowedCharacters.charAt(Math.floor(Math.random() * allowedCharacters.length))
+    }
+    return str;
+  } else {
+    return false;
+  }
 
+}
 module.exports = helpers
