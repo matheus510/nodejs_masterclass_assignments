@@ -1,7 +1,6 @@
-/*
- * Primary file for helpers
- * 
-*/
+//
+// HELPERS File
+//
 
 // Dependencies
 var crypto = require('crypto');
@@ -38,9 +37,9 @@ helpers.hash = function(str){
 helpers.createRandomString = function(length){
   
   if(length){
-    //initialize the string
+    // Initialize the string
     var str = '';
-    // set the characters
+    // Set the characters
     var allowedCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
     for (var i = 0; i < length; i++){
       str+=allowedCharacters.charAt(Math.floor(Math.random() * allowedCharacters.length))

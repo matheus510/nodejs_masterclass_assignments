@@ -1,7 +1,6 @@
-/*
- * Config file. Separated by env.
- *
- */
+//
+// CONFIG file
+//
 
 // Create a container for all configuration for envs
 var config = {};

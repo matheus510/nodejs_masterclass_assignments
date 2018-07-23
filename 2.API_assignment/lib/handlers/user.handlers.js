@@ -1,29 +1,33 @@
-// USERS handlers begin
+//
+// USER handlers file
+//
 
 // Dependencies
-var helpers = require('../helpers')
-var _data = require('../data')
+var helpers = require('../helpers');
+var _data = require('../data');
 
 // Create object to export to handlers
 
-var lib = {}
+var lib = {};
 
-// Create wrapper for all users methods
+// Create wrapper for all user methods
 lib = function(data,callback){
+  // List accepted http methods
   var acceptableMethods = ['post','get','put','delete'];
+
   if(acceptableMethods.indexOf(data.method) > -1){
-    lib._users[data.method](data,callback);
+    lib._user[data.method](data,callback);
   } else {
     callback(405);
   }
 };
 
-// Container for all users methods
-lib._users = {}
+// Container for all user methods
+lib._user = {}
 
-// Users - post
+// User - post
 // Required fields: firstName, lastName, emailAddress, streetAddress, password, tosAgreement
-lib._users.post = function (data, callback) {
+lib._user.post = function(data, callback){
   //Parse payload
   var parsedPayload = JSON.parse(data.payload);
 
@@ -35,12 +39,12 @@ lib._users.post = function (data, callback) {
   var tosAgreement = typeof(parsedPayload.tosAgreement) == 'boolean' && parsedPayload.tosAgreement ? true : false;
 
   if(firstName && lastName && emailAddress && streetAddress && password && tosAgreement){
-    // check if user already exist
+    // Check if user already exist
     _data.read('users',emailAddress,function(err,data){
       if(err){
         var hashedPassword = helpers.hash(password);
         if(hashedPassword){
-          // prepare object to be saved
+          // Prepare object to be saved
           var newUser = {
             'firstName': firstName,
             'lastName': lastName,
@@ -69,26 +73,27 @@ lib._users.post = function (data, callback) {
   }
 };
 
-// Users - get
+// User - get
 // Required field: emailAddress
-lib._users.get = function(data, callback) {
+lib._user.get = function(data, callback){
+
   var emailAddress = typeof(data.queryStringObject.email) == 'string' && helpers.validateEmail(data.queryStringObject.email) ? data.queryStringObject.email : false;
   if(emailAddress){
-    // verify token
+    // Verify token
     var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
-    handlers._tokens.verifyToken(token,emailAddress,function(tokenIsValid){
+    handlers._token.verifyToken(token,emailAddress,function(tokenIsValid){
       if(tokenIsValid){
         // Check if user exists and return the data for that user
-        _data.read('users', emailAddress, function(err, userData){
-          if(!err && userData) {
-            delete userData.password;
-            callback(200, userData);
+        _data.read('users', emailAddress, function(err, data){
+          if(!err && data){
+            delete data.password;
+            callback(200, data);
           } else {
             callback(404);
           }
         })
       } else {
-        callback(400, {'Error' : 'Invalid token'})
+        callback(400, {'Error' : 'Invalid token'});
       }
     });
   } else {
@@ -96,10 +101,10 @@ lib._users.get = function(data, callback) {
   }
 };
 
-// Users - put
+// User - put
 // Required fields: emailAddress and one optional field
 // Optional fields: firstName, lastName, streetAddress, password
-lib._users.put = function(data, callback) {
+lib._user.put = function(data, callback){
     //Parse payload
     var parsedPayload = JSON.parse(data.payload);
     // Verify if the email informed does exist
@@ -111,30 +116,31 @@ lib._users.put = function(data, callback) {
     var password = typeof(parsedPayload.password) == 'string' && parsedPayload.password.trim().length > 5 ? parsedPayload.password.trim() : false;
     
     if(emailAddress){
-      if (firstName || lastName || streetAddress || password) {
-        // verify token
+      if (firstName || lastName || streetAddress || password){
+        // Verify token
         var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
-        handlers._tokens.verifyToken(token,emailAddress,function(tokenIsValid){
+
+        handlers._token.verifyToken(token,emailAddress,function(tokenIsValid){
           if(tokenIsValid){
             // Check if user exists and return the data for that user
             _data.read('users', emailAddress, function(err, userData){
-              if(!err && userData) {
+              if(!err && userData){
                 // Update fields sent
-                if (firstName) {
+                if (firstName){
                   userData.firstName = firstName;
                 }
-                if (lastName) {
+                if (lastName){
                   userData.lastName = lastName;
                 }
-                if (streetAddress) {
+                if (streetAddress){
                   userData.streetAddress = streetAddress;
                 }
-                if (password) {
+                if (password){
                   userData.password = helpers.hash(password);
                 }
                 _data.update('users',emailAddress,userData,function(err){
                   if(!err){
-                    callback(200);
+                    callback(200, userData);
                   } else {
                     callback(500,{'Error' : 'Could not update the user'});
                   }
@@ -154,35 +160,33 @@ lib._users.put = function(data, callback) {
       callback(400, {'Error' : 'Missing required field'});
     }
 };
-// Users - delete
+// User - delete
 // Required fields: emailAddress
-//@TODO only let user deletion if token is present
-lib._users.delete = function(data, callback) {
+lib._user.delete = function(data, callback){
   //Parse payload
   var parsedPayload = JSON.parse(data.payload);
   // Verify if the email informed does exist
   var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress) ? parsedPayload.emailAddress : false;
 
-  if(emailAddress) {
+  if(emailAddress){
     // verify token
     var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
-    handlers._tokens.verifyToken(token,phone,function(tokenIsValid){
+    handlers._token.verifyToken(token,phone,function(tokenIsValid){
     if(tokenIsValid){
       _data.delete('users', emailAddress, function(err){
-        if(!err) {
+        if(!err){
           callback(200)
         } else {
-          callback(500, {'Error' : 'User could not be deleted'})
+          callback(500, {'Error' : 'User could not be deleted'});
         }
       })
     } else {
-    callback(400, {'Error' : 'Invalid token'})
+    callback(400, {'Error' : 'Invalid token'});
     }
   });
   } else {
-    callback(400, {'Error' : 'User not found'})
+    callback(400, {'Error' : 'User not found'});
   }
 }
-// USERS handlers end
 
 module.exports = lib;

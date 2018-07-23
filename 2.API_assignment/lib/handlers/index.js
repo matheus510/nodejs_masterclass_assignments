@@ -1,10 +1,9 @@
-/*
- * Primary file for handlers
- * 
-*/
+//
+// INDEX for handlers files
+//
 
 // Handlers imports
-var usersHandlers = require('./users.handlers');
+var userHandlers = require('./user.handlers');
 var tokenHandlers = require('./token.handlers');
 //var productHandlers = require('./product.handlers');
 
@@ -20,7 +19,7 @@ handlers.notFound = function(data,callback){
   callback(404);
 };
 
-handlers.users = usersHandlers
+handlers.user = userHandlers
 handlers.token = tokenHandlers
 //handlers.product = productHandlers
 

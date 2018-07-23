@@ -1,7 +1,6 @@
-/*
- * Primary file for data lib
- * 
-*/
+//
+// DATA LIB - Database related actions
+//
 
 // Dependencies
 var fs = require('fs');
@@ -22,7 +21,7 @@ lib.create = function(collection, fileName, fileData, callback){
     if(!err && fileDescriptor){
       var dataString = JSON.stringify(fileData);
 
-      //Write in file 
+      // Write in file 
       fs.writeFile(fileDescriptor, dataString, function(err){
         if(!err){
           fs.close(fileDescriptor, function(err){
@@ -42,33 +41,59 @@ lib.create = function(collection, fileName, fileData, callback){
 
 // Read data from a file 
 lib.read = function(collection, fileName, callback){
-  fs.readFile(lib.baseDir+collection+'/'+fileName+'.json', 'utf8', function(err,data){
-    if(!err && data){
-      var parsedData = helpers.parseJsonToObject(data);
-      callback(false, parsedData);
-    } else {
-      callback(err, data);
-    }
-  });
+  // Check if fileName was informed
+  if (fileName){
+    fs.readFile(lib.baseDir+collection+'/'+fileName+'.json', 'utf8', function(err,data){
+      if(!err && data){
+        var parsedData = helpers.parseJsonToObject(data);
+        callback(false, parsedData);
+      } else {
+        callback(err, data);
+      }
+    });
+  } else {
+    // Create a container for all registers
+    var productRegisters = [];
+    // Retrieve all registers
+    fs.readdirSync(lib.baseDir+collection+'/', function(err, files){
+      if(!err && files){
+        for (var i = 0, len = files.length; i < len; i++){
+          fs.readFile(lib.baseDir+collection+'/'+files[i]+'.json', 'utf8', function(err,data){
+            if(!err && data){
+              var parsedData = helpers.parseJsonToObject(data);
+              // add file content to array
+              productRegisters.push(parsedData);
+            } else {
+              callback(err, data);
+            }
+          });
+        }
+        // after end of for loop, return collected data
+        callback(false, productRegisters);
+      } else {
+        calllback(err, files);
+      }
+    })
+  }
 }
 // Update data
 lib.update = function(collection, fileName, newData, callback){
-  // open file (write, r+ operator)
+  // Open file (write, r+ operator)
   fs.open(lib.baseDir+collection+'/'+fileName+'.json', 'r+', function(err, fileDescriptor){
     if(!err && fileDescriptor){
       var dataString = JSON.stringify(newData);
 
-      // truncate (for copying and creating a new version of the file)
+      // Truncate (for copying and creating a new version of the file)
       fs.truncate(fileDescriptor, function(err){
         if(!err){
           
-          // writing file
+          // Writing file
           fs.writeFile(fileDescriptor, dataString, function(err){
             if(!err){
 
-              // close file, if no errors occured
+              // Close file, if no errors occured
               fs.close(fileDescriptor, function(err){
-                if(!err) {
+                if(!err){
                   callback(false)
                 } else {
                   callback('Error : Could not close file correctly')
@@ -87,8 +112,8 @@ lib.update = function(collection, fileName, newData, callback){
     }
   })
 }
-// delete file
-lib.delete = function(collection, fileName, callback) {
+// Delete file
+lib.delete = function(collection, fileName, callback){
   fs.unlink(lib.baseDir+collection+'/'+fileName+'.json', function(err){
     callback(err);
   });

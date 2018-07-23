@@ -1,7 +1,7 @@
-/*
- * Primary file for the pizza-delivery API
- * 
-*/
+//
+// INDEX - Initial file for PizzaDeliveryAPI
+// Author: Matheus de Sousa Monteiro Fonseca (https://github.com/matheus510)
+//
 
 // Dependencies
 var http = require('http');
@@ -11,13 +11,13 @@ var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var handlers = require('./lib/handlers');
 
-var httpsServer = https.createServer(function (req, res) {
+var httpsServer = https.createServer(function(req, res) {
   internalServer(req, res);
 });
-var httpServer = http.createServer(function (req, res) {
+var httpServer = http.createServer(function(req, res) {
   internalServer(req, res);
 });
-var internalServer = function (req, res) {
+var internalServer = function(req, res) {
 
   // parse received url
   var parsedUrl = url.parse(req.url,true);
@@ -44,7 +44,7 @@ var internalServer = function (req, res) {
   });
 
   // check for a matching path for the handler
-  req.on('end', function () {
+  req.on('end', function() {
     buffer += decoder.end();
 
     // Construct the data object to send to the handler
@@ -57,7 +57,7 @@ var internalServer = function (req, res) {
     };
     var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
     console.log(trimmedPath, chosenHandler)
-    chosenHandler(data, function (statusCode, payload) {
+    chosenHandler(data, function(statusCode, payload) {
       // Convert the payload to a string
       var payloadString = JSON.stringify(payload);
 
