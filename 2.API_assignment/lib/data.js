@@ -26,18 +26,20 @@ lib.create = function(collection, fileName, fileData, callback){
         if(!err){
           fs.close(fileDescriptor, function(err){
             if(!err){
-              callback(false)
-            } else {
-              callback('Error : Could not close file correctly')
+              callback(false);
+            }else{
+              callback('Error : Could not close file correctly');
             }
-          })
-        } else {
-          callback('Error : Could not write file correctly')
+          });
+        }else{
+          callback('Error : Could not write file correctly');
         }
       });
+    }else{
+      callback('Error: Could not open file and obtain file descriptor');
     }
   });
-}
+};
 
 // Read data from a file 
 lib.read = function(collection, fileName, callback){
@@ -47,11 +49,11 @@ lib.read = function(collection, fileName, callback){
       if(!err && data){
         var parsedData = helpers.parseJsonToObject(data);
         callback(false, parsedData);
-      } else {
+      }else{
         callback(err, data);
       }
     });
-  } else {
+  }else{
     // Create a container for all registers
     var productRegisters = [];
     // Retrieve all registers
@@ -63,19 +65,19 @@ lib.read = function(collection, fileName, callback){
               var parsedData = helpers.parseJsonToObject(data);
               // add file content to array
               productRegisters.push(parsedData);
-            } else {
+            }else{
               callback(err, data);
             }
           });
         }
         // after end of for loop, return collected data
         callback(false, productRegisters);
-      } else {
+      }else{
         calllback(err, files);
       }
-    })
+    });
   }
-}
+};
 // Update data
 lib.update = function(collection, fileName, newData, callback){
   // Open file (write, r+ operator)
@@ -86,36 +88,34 @@ lib.update = function(collection, fileName, newData, callback){
       // Truncate (for copying and creating a new version of the file)
       fs.truncate(fileDescriptor, function(err){
         if(!err){
-          
           // Writing file
           fs.writeFile(fileDescriptor, dataString, function(err){
             if(!err){
-
               // Close file, if no errors occured
               fs.close(fileDescriptor, function(err){
                 if(!err){
-                  callback(false)
-                } else {
-                  callback('Error : Could not close file correctly')
+                  callback(false);
+                }else{
+                  callback('Error : Could not close file correctly');
                 }
-              })
-            } else {
-              callback('Error : Could not write file correctly')
+              });
+            }else{
+              callback('Error : Could not write file correctly');
             }
-          })
-        } else {
-          callback('Error : Could not truncate file correctly')
+          });
+        }else{
+          callback('Error : Could not truncate file correctly');
         }
-      })
-    } else {
-      callback('Error : Could not open file correctly')
+      });
+    }else{
+      callback('Error : Could not open file correctly');
     }
-  })
-}
+  });
+};
 // Delete file
 lib.delete = function(collection, fileName, callback){
   fs.unlink(lib.baseDir+collection+'/'+fileName+'.json', function(err){
     callback(err);
   });
-}
-module.exports = lib
+};
+module.exports = lib;

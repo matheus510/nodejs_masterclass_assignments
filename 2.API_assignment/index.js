@@ -11,13 +11,13 @@ var url = require('url');
 var StringDecoder = require('string_decoder').StringDecoder;
 var handlers = require('./lib/handlers');
 
-var httpsServer = https.createServer(function(req, res) {
+var httpsServer = https.createServer(function(req, res){
   internalServer(req, res);
 });
-var httpServer = http.createServer(function(req, res) {
+var httpServer = http.createServer(function(req, res){
   internalServer(req, res);
 });
-var internalServer = function(req, res) {
+var internalServer = function(req, res){
 
   // parse received url
   var parsedUrl = url.parse(req.url,true);
@@ -39,12 +39,12 @@ var internalServer = function(req, res) {
   var decoder = new StringDecoder('utf-8');
   var buffer = '';
 
-  req.on('data', function(data) {
-    buffer += decoder.write(data)
+  req.on('data', function(data){
+    buffer += decoder.write(data);
   });
 
   // check for a matching path for the handler
-  req.on('end', function() {
+  req.on('end', function(){
     buffer += decoder.end();
 
     // Construct the data object to send to the handler
@@ -56,8 +56,8 @@ var internalServer = function(req, res) {
       'payload' : buffer
     };
     var chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notFound;
-    console.log(trimmedPath, chosenHandler)
-    chosenHandler(data, function(statusCode, payload) {
+
+    chosenHandler(data, function(statusCode, payload){
       // Convert the payload to a string
       var payloadString = JSON.stringify(payload);
 
@@ -66,15 +66,15 @@ var internalServer = function(req, res) {
       res.writeHead(statusCode);
       res.end(payloadString);
       console.log("Returning this response: ",statusCode,payloadString);
-    })
+    });
   });
 };
 
-httpServer.listen(config.httpPort, function() {
-  console.log('\x1b[42m%s\x1b[0m','listening at port: '+ config.httpPort)
+httpServer.listen(config.httpPort, function(){
+  console.log('\x1b[42m%s\x1b[0m','listening at port: '+ config.httpPort);
 });
-httpsServer.listen(config.httpsPort, function() {
-  console.log('\x1b[42m%s\x1b[0m','listening at port: '+ config.httpsPort)
+httpsServer.listen(config.httpsPort, function(){
+  console.log('\x1b[42m%s\x1b[0m','listening at port: '+ config.httpsPort);
 });
 
 // Define the request router

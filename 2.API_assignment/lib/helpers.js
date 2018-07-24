@@ -7,9 +7,9 @@ var crypto = require('crypto');
 var config = require('./config');
 
 // Create a container for all helpers
-var helpers = {}
+var helpers = {};
 
-helpers.validateEmail = function (str) {
+helpers.validateEmail = function(str){
   var emailValidationExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return emailValidationExp.test(String(str).toLowerCase());
 };
@@ -29,7 +29,7 @@ helpers.hash = function(str){
   if(typeof(str) == 'string' && str.length > 0){
     var hash = crypto.createHmac('sha256', config.hashingSecret).update(str).digest('hex');
     return hash;
-  } else {
+  }else{
     return false;
   }
 };
@@ -42,12 +42,12 @@ helpers.createRandomString = function(length){
     // Set the characters
     var allowedCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
     for (var i = 0; i < length; i++){
-      str+=allowedCharacters.charAt(Math.floor(Math.random() * allowedCharacters.length))
+      str+=allowedCharacters.charAt(Math.floor(Math.random() * allowedCharacters.length));
     }
     return str;
-  } else {
+  }else{
     return false;
   }
 
 }
-module.exports = helpers
+module.exports = helpers;
