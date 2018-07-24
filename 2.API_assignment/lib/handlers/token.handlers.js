@@ -32,7 +32,7 @@ lib._token.post = function(data, callback){
   var password = typeof(parsedPayload.password) == 'string' && parsedPayload.password.trim().length > 5 ? parsedPayload.password.trim() : false;
 
   if(emailAddress && password){
-    //look up the email address to see if it already does exist
+    // Look up the email address to see if it already does exist
     _data.read('users', emailAddress, function(err, userData){
       if(!err && userData){
         var hashedPassword = helpers.hash(password);
@@ -92,7 +92,7 @@ lib._token.put = function(data,callback){
   var extend = typeof(data.payload.extend) == 'boolean' && data.payload.extend == true ? true : false;
   
   if(id && extend){
-    // search the token to see if it exists
+    // Search the token to see if it exists
     _data.read('tokens',id,function(err,tokenData){
       if(!err && tokenData){
         // Check to make sure the token isn't already expired
@@ -101,7 +101,7 @@ lib._token.put = function(data,callback){
           tokenData.expires = Date.now() + 1000 * 60 * 60;
           // Store the new updates
           _data.update('tokens',id,tokenData,function(err){
-            // return the result
+            // Return the result
             if(!err){
               callback(200);
             }else{
@@ -161,7 +161,7 @@ lib._token.verifyToken = function(id,emailAddress,callback){
           if(!err){
             callback(true);
           }else{
-            // treat error no updating expiration date
+            // Treat error no updating expiration date
             callback(true);
           }
         });

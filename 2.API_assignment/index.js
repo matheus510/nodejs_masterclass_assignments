@@ -19,10 +19,10 @@ var httpServer = http.createServer(function(req, res){
 });
 var internalServer = function(req, res){
 
-  // parse received url
+  // Parse received url
   var parsedUrl = url.parse(req.url,true);
 
-  // obtain path
+  // Obtain path
   var path = parsedUrl.pathname;
   var trimmedPath = path.replace(/^\/+|\/+$/g, '');
 
@@ -43,7 +43,7 @@ var internalServer = function(req, res){
     buffer += decoder.write(data);
   });
 
-  // check for a matching path for the handler
+  // Check for a matching path for the handler
   req.on('end', function(){
     buffer += decoder.end();
 

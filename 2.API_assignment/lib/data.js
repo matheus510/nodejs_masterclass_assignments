@@ -16,7 +16,7 @@ lib.baseDir = path.join(__dirname,'/../.data/');
 
 // Persist data to a new file
 lib.create = function(collection, fileName, fileData, callback){
-  // open file
+  // Open file
   fs.open(lib.baseDir+collection+'/'+fileName+'.json', 'wx', function(err, fileDescriptor){
     if(!err && fileDescriptor){
       var dataString = JSON.stringify(fileData);
@@ -63,14 +63,14 @@ lib.read = function(collection, fileName, callback){
           fs.readFile(lib.baseDir+collection+'/'+files[i]+'.json', 'utf8', function(err,data){
             if(!err && data){
               var parsedData = helpers.parseJsonToObject(data);
-              // add file content to array
+              // Add file content to array
               productRegisters.push(parsedData);
             }else{
               callback(err, data);
             }
           });
         }
-        // after end of for loop, return collected data
+        // After end of for loop, return collected data
         callback(false, productRegisters);
       }else{
         calllback(err, files);

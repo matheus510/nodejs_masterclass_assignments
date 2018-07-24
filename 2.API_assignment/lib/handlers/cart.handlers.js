@@ -37,7 +37,7 @@ lib._cart.post = function(data, callback){
   if(emailAddress){
     handlers._token.verifyToken(token, emailAddress, function(tokenIsValid){
       if(tokenIsValid){
-        // check if the cart already exists
+        // Check if the cart already exists
         _data.read('carts', emailAddress, function(err, data){
           if(err){
             // Create object to be sent
@@ -147,7 +147,7 @@ lib._cart.delete = function(data, callback){
   var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress) ? parsedPayload.emailAddress : false;
 
   if(emailAddress){
-    // verify token
+    // Verify token
     var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
     handlers._token.verifyToken(token,phone,function(tokenIsValid){
     if(tokenIsValid){

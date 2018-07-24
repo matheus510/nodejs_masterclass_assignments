@@ -110,7 +110,7 @@ lib._user.put = function(data, callback){
   var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
   handlers._token.verifyToken(token,emailAddress,function(tokenIsValid){
     if(tokenIsValid){
-      //Parse payload
+      // Parse payload
       var parsedPayload = JSON.parse(data.payload);
       // Verify if the email informed does exist
       var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress) ? parsedPayload.emailAddress : false;
@@ -167,7 +167,7 @@ lib._user.delete = function(data, callback){
   var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
   handlers._token.verifyToken(token,phone,function(tokenIsValid){
     if(tokenIsValid){
-      //Parse payload
+      // Parse payload
       var parsedPayload = JSON.parse(data.payload);
       // Verify if the email informed does exist
       var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress) ? parsedPayload.emailAddress : false;

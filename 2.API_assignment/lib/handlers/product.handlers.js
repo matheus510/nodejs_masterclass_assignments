@@ -72,7 +72,7 @@ lib._product.post = function(data, callback){
 // Required: none
 // Optional query string parameters: id
 lib._product.get = function(data, callback){
-  //  Check if id was informed
+  // Check if id was informed
   var id = typeof(parsedPayload.id) == 'number' && idLength == 20 ? parsedPayload.id : false;
     if(id){
       _data.read('products', id, function(err, data){
@@ -142,11 +142,11 @@ lib._product.put = function(data, callback){
 // Product - delete
 // Required fields: id
 lib._product.delete = function(data, callback){
-  // verify token
+  // Verify token
   var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
   handlers._token.verifyToken(token,phone,function(tokenIsValid){
     if(tokenIsValid){
-      //Parse payload
+      // Parse payload
       var parsedPayload = JSON.parse(data.payload);
       // Verify if the id informed does exist
       var id = typeof(parsedPayload.id) == 'number' && idLength == 20 ? parsedPayload.id : false;
