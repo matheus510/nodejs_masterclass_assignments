@@ -5,6 +5,7 @@
 // Dependencies
 var helpers = require('../helpers');
 var _data = require('../data');
+var tokenHandlers = require('../handlers/token.handlers');
 
 // Create object to export to handlers
 
@@ -78,24 +79,25 @@ lib._user.post = function(data, callback){
 lib._user.get = function(data, callback){
   // Verify token
   var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
+  var emailAddress = typeof(data.queryStringObject.email) == 'string' && helpers.validateEmail(data.queryStringObject.email.trim()) ? data.queryStringObject.email.trim() : false;
 
-  handlers._token.verifyToken(token,emailAddress,function(tokenIsValid){
+  tokenHandlers._token.verifyToken(token, emailAddress, function(tokenIsValid){
     if(tokenIsValid){
       // Validate email
       var emailAddress = typeof(data.queryStringObject.email) == 'string' && helpers.validateEmail(data.queryStringObject.email) ? data.queryStringObject.email : false;
       if(emailAddress){
-          // Check if user exists and return the data for that user
-          _data.read('users', emailAddress, function(err, data){
-            if(!err && data){
-              delete data.password;
-              callback(200, data);
-            }else{
-              callback(404);
-            }
-          });
-        }else{
-          callback(400, {'Error' : 'Invalid email address'});
-        }
+        // Check if user exists and return the data for that user
+        _data.read('users', emailAddress, function(err, data){
+          if(!err && data){
+            delete data.password;
+            callback(200, data);
+          }else{
+            callback(404);
+          }
+        });
+      }else{
+        callback(400, {'Error' : 'Invalid email address'});
+      }
     }else{
       callback(400, {'Error' : 'Invalid token'});
     }
@@ -108,7 +110,7 @@ lib._user.get = function(data, callback){
 lib._user.put = function(data, callback){
   // Verify token
   var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
-  handlers._token.verifyToken(token,emailAddress,function(tokenIsValid){
+  tokenHandlers._token.verifyToken(token,emailAddress,function(tokenIsValid){
     if(tokenIsValid){
       // Parse payload
       var parsedPayload = JSON.parse(data.payload);
@@ -165,7 +167,7 @@ lib._user.put = function(data, callback){
 lib._user.delete = function(data, callback){
   // verify token
   var token = typeof(data.headers.token) == 'string' ? data.headers.token : false;
-  handlers._token.verifyToken(token,phone,function(tokenIsValid){
+  tokenHandlers._token.verifyToken(token,phone,function(tokenIsValid){
     if(tokenIsValid){
       // Parse payload
       var parsedPayload = JSON.parse(data.payload);

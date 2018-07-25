@@ -60,7 +60,7 @@ var internalServer = function(req, res){
     chosenHandler(data, function(statusCode, payload){
       // Convert the payload to a string
       var payloadString = JSON.stringify(payload);
-
+      console.log('foi')
       // Return the response
       res.setHeader('Content-Type', 'application/json');
       res.writeHead(statusCode);
@@ -80,5 +80,8 @@ httpsServer.listen(config.httpsPort, function(){
 // Define the request router
 var router = {
   'ping' : handlers.ping,
-  'users' : handlers.users
+  'user' : handlers.user,
+  'token' : handlers.token,
+  'product' : handlers.product,
+  'cart' : handlers.cart
 };

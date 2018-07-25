@@ -3,8 +3,8 @@
 //
 
 // Handlers imports
-var userHandlers = require('./user.handlers');
 var tokenHandlers = require('./token.handlers');
+var userHandlers = require('./user.handlers');
 var productHandlers = require('./product.handlers');
 var cartHandlers = require('./cart.handlers');
 

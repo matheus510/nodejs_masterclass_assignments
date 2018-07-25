@@ -45,7 +45,7 @@ lib.create = function(collection, fileName, fileData, callback){
 lib.read = function(collection, fileName, callback){
   // Check if fileName was informed
   if (fileName){
-    fs.readFile(lib.baseDir+collection+'/'+fileName+'.json', 'utf8', function(err,data){
+    fs.readFile(lib.baseDir+collection+'/'+fileName+'.json', 'utf8', function(err, data){
       if(!err && data){
         var parsedData = helpers.parseJsonToObject(data);
         callback(false, parsedData);
@@ -60,7 +60,7 @@ lib.read = function(collection, fileName, callback){
     fs.readdirSync(lib.baseDir+collection+'/', function(err, files){
       if(!err && files){
         for (var i = 0, len = files.length; i < len; i++){
-          fs.readFile(lib.baseDir+collection+'/'+files[i]+'.json', 'utf8', function(err,data){
+          fs.readFile(lib.baseDir+collection+'/'+files[i]+'.json', 'utf8', function(err, data){
             if(!err && data){
               var parsedData = helpers.parseJsonToObject(data);
               // Add file content to array
@@ -86,7 +86,7 @@ lib.update = function(collection, fileName, newData, callback){
       var dataString = JSON.stringify(newData);
 
       // Truncate (for copying and creating a new version of the file)
-      fs.truncate(fileDescriptor, function(err){
+      fs.ftruncate(fileDescriptor, function(err){
         if(!err){
           // Writing file
           fs.writeFile(fileDescriptor, dataString, function(err){

@@ -35,7 +35,6 @@ helpers.hash = function(str){
 };
 // Create random strings
 helpers.createRandomString = function(length){
-  
   if(length){
     // Initialize the string
     var str = '';
@@ -48,6 +47,6 @@ helpers.createRandomString = function(length){
   }else{
     return false;
   }
+};
 
-}
 module.exports = helpers;

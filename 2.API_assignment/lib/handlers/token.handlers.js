@@ -3,13 +3,13 @@
 //
 
 // Dependencies
-var helpers = require('../helpers')
-var _data = require('../data')
+var helpers = require('../helpers');
+var _data = require('../data');
 
 // Create object to be exported
 var lib = {};
 
-lib.token = function(data, callback){
+lib = function(data, callback){
   // List accepted http methods
   var acceptableMethods = ['post','get','put','delete'];
 
@@ -28,9 +28,9 @@ lib._token = {};
 lib._token.post = function(data, callback){
   
   var parsedPayload = JSON.parse(data.payload);
-  var emailAddress = typeof(data.payload.emailAddress) == 'string' && helpers.validateEmail(data.payload.emailAddress) ? data.payload.emailAddress : false;
+  var emailAddress = typeof(parsedPayload.emailAddress) == 'string' && helpers.validateEmail(parsedPayload.emailAddress) ? parsedPayload.emailAddress : false;
   var password = typeof(parsedPayload.password) == 'string' && parsedPayload.password.trim().length > 5 ? parsedPayload.password.trim() : false;
-
+  
   if(emailAddress && password){
     // Look up the email address to see if it already does exist
     _data.read('users', emailAddress, function(err, userData){
@@ -165,7 +165,6 @@ lib._token.verifyToken = function(id,emailAddress,callback){
             callback(true);
           }
         });
-        callback(true);
       }else{
         callback(false);
       }

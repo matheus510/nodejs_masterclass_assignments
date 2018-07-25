@@ -7,14 +7,14 @@ var config = {};
 
 config.staging = {
   'httpPort': 5000,
-  'httpsPort': 5001,
+  'httpsPort': 8000,
   'envName': 'staging',
   'hashingSecret': 'hiddenSecret'
 };
 
 config.production = {
   'httpPort': 5000,
-  'httpsPort': 5001,
+  'httpsPort': 8000,
   'envName': 'production',
   'hashingSecret': 'hiddenSecret'
 };
